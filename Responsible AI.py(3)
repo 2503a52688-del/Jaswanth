@@ -1,0 +1,98 @@
+"""
+Transparency risks:
+1. A decision without reasons prevents students from understanding the result.
+2. Students cannot correct inaccurate information or appeal effectively.
+3. Hidden criteria may introduce unfair or biased decisions.
+4. The system should show the important factors and allow human review.
+"""
+
+
+# Example of an opaque admission system
+def opaque_admission_decision(entrance_score, academic_marks):
+    total = entrance_score * 0.6 + academic_marks * 0.4
+    return "Selected" if total >= 70 else "Rejected"
+
+
+opaque_result = opaque_admission_decision(82, 68)
+print("Opaque decision:", opaque_result)
+print("Explanation: None provided")
+
+
+# Explainable admission system
+def admission_decision(
+    entrance_score,
+    academic_marks,
+    interview_score,
+    attendance_percentage,
+):
+    values = {
+        "Entrance exam score": entrance_score,
+        "Academic marks": academic_marks,
+        "Interview score": interview_score,
+        "Attendance percentage": attendance_percentage,
+    }
+
+    for name, value in values.items():
+        if not 0 <= value <= 100:
+            raise ValueError(f"{name} must be between 0 and 100.")
+
+    weights = {
+        "Entrance exam score": 0.40,
+        "Academic marks": 0.30,
+        "Interview score": 0.20,
+        "Attendance percentage": 0.10,
+    }
+
+    contributions = {
+        name: values[name] * weights[name]
+        for name in values
+    }
+
+    total_score = sum(contributions.values())
+    selected = total_score >= 70
+
+    ranked_factors = sorted(
+        contributions.items(),
+        key=lambda item: item[1],
+        reverse=True,
+    )
+
+    if selected:
+        decision = "Selected"
+        explanation = (
+            "The student was selected because the weighted admission "
+            "score met or exceeded the required threshold of 70."
+        )
+    else:
+        decision = "Rejected"
+        explanation = (
+            "The student was not selected because the weighted admission "
+            "score was below the required threshold of 70."
+        )
+
+    return {
+        "decision": decision,
+        "total_score": round(total_score, 2),
+        "explanation": explanation,
+        "important_factors": [
+            {
+                "factor": name,
+                "contribution": round(contribution, 2),
+            }
+            for name, contribution in ranked_factors
+        ],
+        "human_review_available": True,
+    }
+
+
+result = admission_decision(
+    entrance_score=82,
+    academic_marks=68,
+    interview_score=75,
+    attendance_percentage=90,
+)
+
+print("\nExplainable admission result:")
+for key, value in result.items():
+    print(f"{key}: {value}")
+    

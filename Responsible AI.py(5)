@@ -1,0 +1,74 @@
+"""
+Accessible and inclusive user feedback form.
+
+Accessibility features:
+- Keyboard and screen-reader friendly text interface.
+- Clear prompts and validation messages.
+- Optional demographic questions.
+- Inclusive language and self-described identity fields.
+- No assumptions about gender, disability, or preferred language.
+"""
+
+
+def ask_required(prompt):
+    while True:
+        answer = input(prompt).strip()
+        if answer:
+            return answer
+        print("This field is required. Please try again.")
+
+
+def ask_rating():
+    while True:
+        answer = input("Overall experience, from 1 to 5: ").strip()
+        if answer.isdigit() and 1 <= int(answer) <= 5:
+            return int(answer)
+        print("Please enter a whole number from 1 to 5.")
+
+
+def ask_optional(prompt):
+    answer = input(f"{prompt} (optional): ").strip()
+    return answer if answer else "Not provided"
+
+
+def collect_feedback():
+    print("User Feedback Form")
+    print("------------------")
+    print("You may skip any optional question.")
+    print("Your feedback helps us improve our service.\n")
+
+    name = ask_optional("Name")
+    contact = ask_optional("Email or another preferred contact method")
+    rating = ask_rating()
+    comments = ask_required("What worked well, and what could be improved? ")
+
+    preferred_language = ask_optional("Preferred language for future communication")
+    pronouns = ask_optional("Pronouns or other form of address")
+    accessibility_needs = ask_optional(
+        "Accessibility needs or accommodations that would improve your experience"
+    )
+    follow_up = ask_optional(
+        "Would you like a response? Enter yes or no"
+    )
+
+    feedback = {
+        "name": name,
+        "contact": contact,
+        "overall_rating": rating,
+        "comments": comments,
+        "preferred_language": preferred_language,
+        "pronouns": pronouns,
+        "accessibility_needs": accessibility_needs,
+        "request_follow_up": follow_up.lower(),
+    }
+
+    print("\nThank you. Your feedback was recorded.")
+    return feedback
+
+
+if __name__ == "__main__":
+    submitted_feedback = collect_feedback()
+    print("\nSubmitted feedback:")
+    for field, value in submitted_feedback.items():
+        print(f"{field}: {value}")
+        

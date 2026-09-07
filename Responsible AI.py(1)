@@ -1,0 +1,59 @@
+import base64
+import hashlib
+import json
+import secrets
+from getpass import getpass
+from pathlib import Path
+
+DATA_FILE = Path("users.json")
+
+
+def hash_password(password: str) -> dict:
+    salt = secrets.token_bytes(16)
+
+    password_hash = hashlib.scrypt(
+        password.encode("utf-8"),
+        salt=salt,
+        n=16384,
+        r=8,
+        p=1,
+    )
+
+    return {
+        "salt": base64.b64encode(salt).decode("ascii"),
+        "hash": base64.b64encode(password_hash).decode("ascii"),
+    }
+
+
+def save_user(name: str, email: str, password: str) -> None:
+    users = []
+
+    if DATA_FILE.exists():
+        with DATA_FILE.open("r", encoding="utf-8") as file:
+            users = json.load(file)
+
+    password_data = hash_password(password)
+
+    users.append({
+        "name": name,
+        "email": email,
+        "password_salt": password_data["salt"],
+        "password_hash": password_data["hash"],
+    })
+
+    with DATA_FILE.open("w", encoding="utf-8") as file:
+        json.dump(users, file, indent=2)
+
+    print("User data saved securely.")
+
+
+def main() -> None:
+    name = input("Name: ").strip()
+    email = input("Email: ").strip()
+    password = getpass("Password: ")
+
+    save_user(name, email, password)
+
+
+if __name__ == "__main__":
+    main()

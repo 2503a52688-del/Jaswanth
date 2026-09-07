@@ -1,0 +1,81 @@
+"""
+Ethical employee performance evaluation system.
+
+Fairness safeguards:
+- Uses job-related criteria only.
+- Publishes the scoring weights.
+- Allows approved attendance accommodations.
+- Does not use protected characteristics.
+- Requires human review before employment decisions.
+"""
+
+
+def evaluate_employee(
+    project_completion_rate,
+    teamwork_score,
+    attendance_rate,
+    attendance_adjustment=0,
+):
+    values = {
+        "Project completion rate": project_completion_rate,
+        "Teamwork score": teamwork_score,
+        "Attendance rate": attendance_rate,
+    }
+
+    for name, value in values.items():
+        if not 0 <= value <= 100:
+            raise ValueError(f"{name} must be between 0 and 100.")
+
+    if not 0 <= attendance_adjustment <= 100:
+        raise ValueError("Attendance adjustment must be between 0 and 100.")
+
+    # Approved leave or workplace accommodations can be excluded fairly.
+    adjusted_attendance = min(100, attendance_rate + attendance_adjustment)
+
+    weights = {
+        "Project completion rate": 0.50,
+        "Teamwork score": 0.30,
+        "Adjusted attendance rate": 0.20,
+    }
+
+    contributions = {
+        "Project completion rate": project_completion_rate * weights[
+            "Project completion rate"
+        ],
+        "Teamwork score": teamwork_score * weights["Teamwork score"],
+        "Adjusted attendance rate": adjusted_attendance * weights[
+            "Adjusted attendance rate"
+        ],
+    }
+
+    total_score = sum(contributions.values())
+
+    if total_score >= 85:
+        rating = "Outstanding"
+    elif total_score >= 70:
+        rating = "Meets expectations"
+    else:
+        rating = "Needs improvement"
+
+    return {
+        "overall_score": round(total_score, 2),
+        "rating": rating,
+        "factor_contributions": {
+            factor: round(value, 2)
+            for factor, value in contributions.items()
+        },
+        "human_review_required": True,
+    }
+
+
+result = evaluate_employee(
+    project_completion_rate=90,
+    teamwork_score=82,
+    attendance_rate=88,
+    attendance_adjustment=5,
+)
+
+print("Employee evaluation:")
+for key, value in result.items():
+    print(f"{key}: {value}")
+    

@@ -1,0 +1,46 @@
+def scholarship_eligibility(academic_score, family_income, location):
+    """
+    Fairness-aware scholarship checker.
+
+    Location is used only to identify regional cost-of-living hardship.
+    It does not automatically determine eligibility.
+    """
+
+    if not 0 <= academic_score <= 100:
+        raise ValueError("Academic score must be between 0 and 100.")
+
+    if family_income < 0:
+        raise ValueError("Family income cannot be negative.")
+
+    regional_adjustments = {
+        "rural": 10,
+        "remote": 10,
+        "urban": 0,
+        "suburban": 0,
+    }
+
+    location = location.lower()
+    hardship_points = regional_adjustments.get(location, 0)
+
+    income_points = max(0, min(50, 50 - family_income / 2000))
+    score_points = academic_score * 0.5
+
+    total_score = score_points + income_points + hardship_points
+
+    return {
+        "eligible": total_score >= 80,
+        "score": round(total_score, 2),
+        "academic_score": academic_score,
+        "income_points": round(income_points, 2),
+        "hardship_points": hardship_points,
+    }
+
+
+# Example
+result = scholarship_eligibility(
+    academic_score=88,
+    family_income=30000,
+    location="rural"
+)
+
+print(result)

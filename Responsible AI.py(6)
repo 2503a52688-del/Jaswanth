@@ -1,0 +1,108 @@
+"""
+Fairness risks:
+- Using gender, race, religion, disability, or nationality can create discrimination.
+- Biased historical loan data can reproduce past unfair decisions.
+- Age should not affect the score, except for legally required eligibility checks.
+- Automated decisions should be explainable and reviewed by a human.
+"""
+
+
+def biased_loan_decision(applicant):
+    """Example of an unfair rule that uses a sensitive attribute."""
+    if applicant["gender"].lower() == "female":
+        return "Rejected"  # Discriminatory and unrelated to repayment ability.
+    return "Approved"
+
+
+def fair_loan_decision(
+    income,
+    employment_status,
+    credit_score,
+    loan_amount,
+    monthly_debt,
+    age=None,
+):
+    """
+    Educational example using financial factors only.
+
+    Age is checked only for a possible legal minimum-age requirement.
+    It is not used to calculate the applicant's score.
+    """
+
+    if income <= 0:
+        raise ValueError("Income must be greater than zero.")
+    if loan_amount <= 0:
+        raise ValueError("Loan amount must be greater than zero.")
+    if monthly_debt < 0:
+        raise ValueError("Monthly debt cannot be negative.")
+    if not 300 <= credit_score <= 850:
+        raise ValueError("Credit score must be between 300 and 850.")
+
+    if age is not None and age < 18:
+        return {
+            "decision": "Manual review",
+            "score": 0,
+            "reason": "Applicant may not meet the minimum legal age requirement.",
+        }
+
+    annual_debt = monthly_debt * 12
+    debt_to_income_ratio = annual_debt / income
+
+    score = 0
+    reasons = []
+
+    if credit_score >= 700:
+        score += 50
+        reasons.append("strong credit score")
+    elif credit_score >= 600:
+        score += 30
+        reasons.append("moderate credit score")
+    else:
+        reasons.append("credit score needs improvement")
+
+    if employment_status.lower() in {"employed", "self-employed"}:
+        score += 20
+        reasons.append("stable employment status")
+
+    if debt_to_income_ratio <= 0.35:
+        score += 20
+        reasons.append("manageable debt-to-income ratio")
+    else:
+        reasons.append("high debt-to-income ratio")
+
+    if loan_amount <= income * 0.5:
+        score += 10
+        reasons.append("loan amount is proportionate to income")
+    else:
+        reasons.append("loan amount is high compared with income")
+
+    if score >= 70:
+        decision = "Approved"
+    elif score >= 50:
+        decision = "Manual review"
+    else:
+        decision = "Rejected"
+
+    return {
+        "decision": decision,
+        "score": score,
+        "debt_to_income_ratio": round(debt_to_income_ratio, 2),
+        "reasons": reasons,
+        "human_review_required": decision == "Manual review",
+    }
+
+
+# Example showing a transparent decision
+result = fair_loan_decision(
+    income=60000,
+    employment_status="employed",
+    credit_score=720,
+    loan_amount=20000,
+    monthly_debt=1000,
+    age=30,
+)
+
+print("Loan decision:")
+for key, value in result.items():
+    print(f"{key}: {value}")
+    
