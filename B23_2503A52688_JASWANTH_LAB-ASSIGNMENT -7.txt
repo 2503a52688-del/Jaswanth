@@ -1,0 +1,218 @@
+
+        Lab 7: Error Debugging with AI: Systematic approaches to
+               finding and fixing bugs
+
+
+1).Task Description #1 (Syntax Errors – Missing Parentheses in Print
+Statement)
+Task: Provide a Python snippet with a missing parenthesis in a print
+statement (e.g., print &quot;Hello&quot;). Use AI to detect and fix the syntax
+error.
+# Bug: Missing parentheses in print statement
+
+def greet():
+print &quot;Hello, AI Debugging Lab!&quot;
+greet()
+
+Week4 -
+Monday
+
+Requirements:
+ Run the given code to observe the error.
+Apply AI suggestions to correct the syntax.
+ Use at least 3 assert test cases to confirm the corrected code
+works.
+Expected Output #1:
+Corrected code with proper syntax and AI explanation.
+
+
+Code:
+
+def greet():
+    return "Hello, AI Debugging Lab!"
+
+# Test cases using assert
+assert greet() == "Hello, AI Debugging Lab!"
+assert isinstance(greet(), str)
+assert len(greet()) > 0
+
+print(greet())
+print("All 3 assert test cases passed.")
+
+
+Output:
+
+Hello, AI Debugging Lab!
+All 3 assert test cases passed.
+
+
+
+2).Task Description #2 (Incorrect condition in an If Statement)
+Task: Supply a function where an if-condition mistakenly uses =
+instead of ==. Let AI identify and fix the issue.
+# Bug: Using assignment (=) instead of comparison (==)
+def check_number(n):
+if n = 10:
+return &quot;Ten&quot;
+else:
+return &quot;Not Ten&quot;
+Requirements:
+ Ask AI to explain why this causes a bug.
+ Correct the code and verify with 3 assert test cases.
+Expected Output #2:
+ Corrected code using == with explanation and successful test
+execution.
+
+
+Code:
+
+def check_number(n):
+    if n == 10:
+        return "Ten"
+    else:
+        return "Not Ten"
+
+
+# Assert test cases
+assert check_number(10) == "Ten"
+assert check_number(5) == "Not Ten"
+assert check_number(20) == "Not Ten"
+
+print("All 3 test cases passed successfully!")
+
+
+Output:
+
+All 3 test cases passed successfully!
+
+
+3).Task Description #3 (Runtime Error – File Not Found)
+Task: Provide code that attempts to open a non-existent file and
+crashes. Use AI to apply safe error handling.
+# Bug: Program crashes if file is missing
+def read_file(filename):
+with open(filename, &#39;r&#39;) as f:
+return f.read()
+print(read_file(&quot;nonexistent.txt&quot;))
+Requirements:
+
+ Implement a try-except block suggested by AI.
+ Add a user-friendly error message.
+ Test with at least 3 scenarios: file exists, file missing, invalid
+path.
+Expected Output #3:
+ Safe file handling with exception management.
+
+code:
+
+def read_file(filename):
+    try:
+        with open(filename, 'r') as f:
+            return f.read()
+
+    except FileNotFoundError:
+        return "Error: File not found."
+
+    except OSError:4
+        return "Error: Invalid file path."
+
+# Test 1: Existing file
+print(read_file("sample.txt"))
+
+# Test 2: Missing file
+print(read_file("missing.txt"))
+
+# Test 3: Invalid path
+print(read_file("C:/invalid_folder/test.txt"))
+
+OUTPUT:
+
+| Test         | Input               | Result                   |
+| ------------ | ------------------- | ------------------------ |
+| File exists  | `sample.txt`        | File contents displayed  |
+| File missing | `missing.txt`       | `Error: File not found.` |
+| Invalid path | Invalid folder/path | Error message displayed  |
+
+
+4).Task Description #4 (Calling a Non-Existent Method)
+Task: Give a class where a non-existent method is called (e.g.,
+obj.undefined_method()). Use AI to debug and fix.
+# Bug: Calling an undefined method
+class Car:
+def start(self):
+return &quot;Car started&quot;
+my_car = Car()
+print(my_car.drive()) # drive() is not defined
+Requirements:
+ Students must analyze whether to define the missing method
+or correct the method call.
+ Use 3 assert tests to confirm the corrected class works.
+Expected Output #4:
+ Corrected class with clear AI explanation.
+
+code:
+
+class Car:
+    def start(self):
+        return "Car started"
+
+
+my_car = Car()
+
+print(my_car.start())
+
+# 3 assert tests
+assert my_car.start() == "Car started"
+assert isinstance(my_car, Car)
+assert hasattr(my_car, "start")
+
+print("All 3 tests passed!")
+
+output:
+
+All 3 tests passed!
+
+
+5). Task Description #5 (TypeError – Mixing Strings and Integers in
+Addition)
+Task: Provide code that adds an integer and string (&quot;5&quot; + 2) causing
+a TypeError. Use AI to resolve the bug.
+# Bug: TypeError due to mixing string and integer
+def add_five(value):
+return value + 5
+print(add_five(&quot;10&quot;))
+Requirements:
+ Ask AI for two solutions: type casting and string
+
+
+code:
+
+def add_five(value):
+    return int(value) + 5
+
+print(add_five("10"))
+
+output:
+
+15
+
+
+If the intention is to join the values as text, convert 5 into a string.
+
+def add_five(value):
+    return value + str(5)
+
+print(add_five("10"))
+
+output
+
+105
+
+
+
+
+
+
+
+
+ 
